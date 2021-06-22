@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.car.dao.UserMapper">
+
+    <!-- 注册 -->
+    <insert id="register" parameterType="com.example.car.model.User">
+        insert into user(id, account, password, nickname, head_url, phone_number, car_brand, register_time)
+            value(#{id}, #{account}, #{password}, #{nickname}, #{head_url}, #{phone_number}, #{car_brand}, #{register_time})
+    </insert>
+
+    <!-- 查询一个用户  -->
+    <select id="selectUser" parameterType="java.lang.String" resultType="com.example.car.model.User">
+        select * from user where account = #{account};
+    </select>
+
+    <!-- 查询一个用户 -->
+    <select id="selectUserById" parameterType="int" resultType="com.example.car.model.User">
+        select * from user where id = #{id}
+    </select>
+
+    <!-- 查询所有用户 -->
+    <select id="selectAllUser" resultType="com.example.car.model.User">
+        select * from user
+    </select>
+
+    <!-- 删除用户 -->
+    <delete id="deleteUser" parameterType="int">
+        delete from car_user where id = #{id}
+    </delete>
+</mapper>

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.car.dao.EvaluationMapper">
+    <!-- 添加一条评论  -->
+    <insert id="addEvaluation" parameterType="com.example.car.model.Evaluation">
+        insert into evaluation(id, user_id, appointment_id, program_id, store_id, score, evaluation, evaluate_time)
+            value(#{id}, #{user_id}, #{appointment_id}, #{program_id}, #{store_id}, #{score}, #{evaluation}, #{evaluate_time});
+    </insert>
+
+    <!-- 查看预约评论 -->
+    <select id="selectUserEvaluation" parameterType="int" resultType="com.example.car.model.EvaluationForUser">
+        select evaluation.id, nickname, head_url,evaluate_time, program_name, evaluation, store_name, evaluation.score
+        from evaluation, user, store, program
+        where evaluation.user_id = #{user_id} and evaluation.user_id = user.id  and evaluation.store_id = store.id AND evaluation.program_id = program.id
+    </select>
+
+    <!--    查询保养店所有保养项目 -->
+    <select id="selectProgramByStoreId" parameterType="int" resultType="com.example.car.model.Program">
+        SELECT program.*, store_name
+        FROM program
+                 LEFT JOIN store
+                           ON program.store_id = store.id
+        where store_id = #{store_id}
+    </select>
+
+    <!-- 查看保养店的评论 -->
+    <select id="selectEvaluationByStoreId" parameterType="int" resultType="com.example.car.model.EvaluationForUser">
+        select evaluation.id, nickname, head_url,evaluate_time, program_name, evaluation, store_name, evaluation.score
+        from evaluation, user, store, program
+        where evaluation.store_id = #{store_id} and evaluation.user_id = user.id
+          and evaluation.store_id = store.id AND evaluation.program_id = program.id
+    </select>
+
+    <!-- 查看保养服务评论 -->
+    <select id="selectProgramEvaluation" parameterType="int" resultType="com.example.car.model.EvaluationForProgram">
+        select evaluation.id, head_url, nickname, car_brand, evaluate_time, evaluation.score, evaluation, program_name
+        from evaluation, user, program
+        where evaluation.program_id = #{program_id} and evaluation.user_id = user.id and program.id = #{prigram_id}
+    </select>
+
+    <!-- 计算平均分 -->
+    <select id="calculateScore" parameterType="int" resultType="double">
+        select AVG(score) from evaluation where store_id = #{store_id}
+    </select>
+</mapper>

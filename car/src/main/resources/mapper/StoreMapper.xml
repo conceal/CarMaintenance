@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.car.dao.StoreMapper">
+
+    <!-- 注册 -->
+    <insert id="register" parameterType="com.example.car.model.Store">
+        insert into store(id, account, password, phone_number, store_name, store_address, store_url, register_time, score, trading_volume, location, distance)
+            value(#{id}, #{account}, #{password}, #{phone_number}, #{store_name}, #{store_address}, #{store_url}, #{register_time}, #{score}, #{trading_volume}, #{location}, 0.0)
+    </insert>
+
+    <!-- 登录 -->
+    <select id="login" parameterType="java.lang.String" resultType="com.example.car.model.Store">
+        select * from store where account = #{account};
+    </select>
+
+    <!-- 查询一个用户  -->
+    <select id="selectStore" parameterType="int" resultType="com.example.car.model.Store">
+        select * from store where id = #{id};
+    </select>
+
+    <!-- 查询所有用户 -->
+    <select id="selectAllStore" resultType="com.example.car.model.Store">
+        select * from store
+    </select>
+
+    <!-- 修改保养店评分 -->
+    <update id="updateScore" parameterType="com.example.car.model.Store">
+        update store set score = #{score} where id= #{id}
+    </update>
+
+    <!-- 查询评分 -->
+    <select id="selectStoreScore" parameterType="int" resultType="double">
+        select score from store where id = #{id};
+    </select>
+
+    <!-- 更新保养店销量 -->
+    <update id="updateStoreTradingVolume" parameterType="com.example.car.model.Store">
+        update store set trading_volume = trading_volume+1 where id = #{id}
+    </update>
+
+    <!-- 删除保养店 -->
+    <delete id="deleteStore" parameterType="int">
+        delete from store where id = #{id}
+    </delete>
+
+    <select id="selectStoreBusinessTime" parameterType="int" resultType="String">
+        select business_time from store where id = #{id}
+    </select>
+
+</mapper>

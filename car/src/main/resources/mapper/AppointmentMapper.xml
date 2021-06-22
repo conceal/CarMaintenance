@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.car.dao.AppointmentMapper">
+    <!-- 添加预约  -->
+    <insert id="addAppointment" parameterType="com.example.car.model.Appointment">
+        insert into appointment(id, user_id, program_id, store_id, appointment_time, complete, evaluate)
+            value (#{id}, #{user_id}, #{program_id}, #{store_id}, #{appointment_time}, #{complete}, #{evaluate})
+    </insert>
+
+    <!-- 查询预约 -->
+    <select id="selectAppointment" parameterType="int" resultType="com.example.car.model.Appointment">
+        select * from appointment where id = #{id}
+    </select>
+    <!-- 车主查询所有预约 -->
+    <select id="selectUserAppointment" parameterType="int" resultType="com.example.car.model.Appointment">
+        select * from appointment where user_id = #{user_id}
+    </select>
+
+    <!-- 车主查询完成预约 -->
+    <select id="userCompleteAppointment" parameterType="com.example.car.model.Appointment" resultType="com.example.car.model.AppointmentForUser">
+        select appointment.id, appointment.program_id,appointment.appointment_time, program.program_name, program.program_url, program.price, store.store_name
+        from appointment, program, store
+        where appointment.user_id = #{user_id} and appointment.complete = #{complete} and appointment.program_id = program.id and appointment.store_id = store.id
+    </select>
+
+    <!-- 查询未评价预约 -->
+    <select id="selectEvaluateAppointment" parameterType="int" resultType="com.example.car.model.AppointmentForUser">
+        select appointment.id, appointment.program_id,appointment.appointment_time, program.program_name, program.program_url, program.price, store.store_name, store.id as store_id
+        from appointment, program, store
+        where appointment.user_id = #{user_id} and appointment.complete = #{complete} and appointment.evaluate = #{evaluate} and appointment.program_id = program.id and appointment.store_id = store.id
+    </select>
+
+    <!-- 设置预约为已评价 -->
+    <update id="evaluateAppointment" parameterType="int">
+        update appointment set evaluate = 1 where id = #{id}
+    </update>
+
+    <!-- 保养店主查询预约 -->
+    <select id="selectStoreAppointment" parameterType="int" resultType="com.example.car.model.Appointment">
+        select * from appointment where store_id = #{store_id}
+    </select>
+
+    <!-- 保养店主查询未完成预约 -->
+    <select id="storeCompleteAppointment" parameterType="com.example.car.model.Appointment" resultType="com.example.car.model.AppointmentForStore">
+        select appointment.id, appointment.program_id,appointment.appointment_time, program.program_name, program.program_url, program.price, user.nickname, user.phone_number
+        from appointment, program, user
+        where appointment.store_id = #{store_id} and appointment.complete = #{complete} and appointment.program_id = program.id and appointment.user_id = user.id
+    </select>
+
+    <!-- 保养店主设置已完成预约 -->
+    <update id="completedAppointment" parameterType="com.example.car.model.Appointment">
+        update appointment set complete = 1 where id = #{id}
+    </update>
+
+    <!-- 修改预约时间 -->
+    <update id="updateAppointmentTime" parameterType="com.example.car.model.Appointment">
+        update appointment set appointment = #{appointment_time} where id = #{id}
+    </update>
+
+    <!-- 删除预约 -->
+    <delete id="deleteAppointment" parameterType="com.example.car.model.Appointment">
+        delete
+        from appointment
+        where id = #{id};
+    </delete>
+
+    <select id="selectProgramAppointmentTime" parameterType="com.example.car.model.AppointmentTime" resultType="String">
+        select appointment_time from appointment where program_id = #{program_id} AND appointment_time like '${date}%'
+    </select>
+</mapper>

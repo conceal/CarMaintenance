@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.car.dao.AdminMapper">
+
+    <!-- 查询一个用户  -->
+    <select id="selectAdmin" parameterType="java.lang.String" resultType="com.example.car.model.Admin">
+        select * from admin where account = #{account};
+    </select>
+
+    <!-- 查询所有用户 -->
+    <select id="selectAllAdmin" resultType="com.example.car.model.Admin">
+        select * from admin
+    </select>
+
+    <!-- 注册 -->
+    <insert id="register" parameterType="com.example.car.model.Admin">
+        insert into admin(id, account, password)
+            value(#{id}, #{account}, #{password})
+    </insert>
+</mapper>

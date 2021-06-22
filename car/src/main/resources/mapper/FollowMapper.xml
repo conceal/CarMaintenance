@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.car.dao.FollowMapper">
+    <!-- 添加一条关注 -->
+    <insert id="insertFollow" parameterType="com.example.car.model.Follow">
+        insert into follow(id, user_id, store_id)
+            value(#{id}, #{user_id}, #{store_id})
+    </insert>
+
+    <!-- 搜索一个Follow -->
+    <select id="selectFollow" parameterType="com.example.car.model.Follow" resultType="com.example.car.model.Follow">
+        select * from follow where user_id = #{user_id} and store_id = #{store_id}
+    </select>
+
+    <!-- 查询用户关注的保养店 -->
+    <select id="selectFollowStores" parameterType="int" resultType="com.example.car.model.Store">
+        select store.*
+        from store
+                 LEFT JOIN follow
+                           on follow.store_id = store.id
+        where follow.user_id = #{user_id}
+    </select>
+
+    <!-- 删除一个Follow -->
+    <delete id="deleteFollow" parameterType="int">
+        delete from follow where id = #{id}
+    </delete>
+</mapper>

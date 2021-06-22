@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.car.dao.ProgramMapper">
+    <!-- 发布一个保养项目  -->
+    <insert id="releaseProgram" parameterType="com.example.car.model.Program">
+        insert into program(id, program_name, program_url, store_id, price, trading_volume, details, score)
+            value(#{id}, #{program_name}, #{program_url}, #{store_id}, #{price}, #{trading_volume}, #{details}, #{score})
+    </insert>
+
+    <!-- 通过 id 查询保养项目 -->
+    <select id="selectProgram" parameterType="int" resultType="com.example.car.model.Program">
+        SELECT program.*, store_name
+        FROM program
+            LEFT JOIN store
+                ON program.store_id = store.id
+        WHERE program.id = #{id}
+    </select>
+
+    <!--    查询保养店所有保养项目 -->
+    <select id="selectProgramByStoreId" parameterType="int" resultType="com.example.car.model.Program">
+        SELECT program.*, store_name
+        FROM program
+                 LEFT JOIN store
+                           ON program.store_id = store.id
+        where store_id = #{store_id}
+    </select>
+
+    <!-- 搜索保养项目 -->
+    <select id="searchProgram" parameterType="java.lang.String" resultType="com.example.car.model.Program">
+        SELECT program.*, store_name
+        FROM program
+                 LEFT JOIN store
+                           ON program.store_id = store.id
+        where program_name LIKE '%${program_name}%'
+    </select>
+
+    <!-- 删除一个保养项目-->
+    <delete id="deleteProgram" parameterType="com.example.car.model.Program">
+        delete from program where program_name = #{program_name} and store_id = #{store_id}
+    </delete>
+
+    <!-- 更改保养项目的销量 -->
+    <update id="updateProgramTradingVolume" parameterType="int" >
+        update program
+        set trading_volume = trading_volume+1 where id = #{id}
+    </update>
+
+    <update id="updateProgramScore" parameterType="int">
+        UPDATE program
+        SET score = (SELECT AVG( score ) FROM evaluation WHERE program_id = #{id})
+        WHERE id = #{id}
+    </update>
+
+
+    <select id="selectProgramDetails" parameterType="int" resultType="com.example.car.model.ProgramDetails">
+        SELECT program.*, store_name, store_address
+        FROM program
+                 LEFT JOIN store
+                           ON program.store_id = store.id
+        WHERE program.id = #{id}
+    </select>
+</mapper>
